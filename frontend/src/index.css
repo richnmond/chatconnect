@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-gray-900 dark:text-gray-100;
+  }
+}
+
+@layer components {
+  .message-bubble {
+    @apply relative px-4 py-2 rounded-2xl max-w-[70%] break-words;
+  }
+
+  .message-bubble-sent {
+    @apply message-bubble bg-primary-500 text-white;
+  }
+
+  .message-bubble-received {
+    @apply message-bubble bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+@layer utilities {
+  .animate-typing {
+    animation: typing 1.4s infinite;
+  }
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
