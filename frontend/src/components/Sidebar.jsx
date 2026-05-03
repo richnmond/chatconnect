@@ -7,13 +7,13 @@ import toast from 'react-hot-toast'
 import { format } from 'date-fns'
 import { 
   FiSearch, 
-  FiPlus, 
-  FiLogOut, 
-  FiSun, 
+  FiPlus,     
+  FiLogOut,    
+  FiSun,  
   FiMoon,
-  FiUser,
+  FiUser,  
   FiUsers
-} from 'react-icons/fi'
+} from 'react-icons/fi' 
 import NewChatModal from './NewChatModal'
 
 export default function Sidebar({ selectedChat, onSelectChat }) {
@@ -80,6 +80,10 @@ export default function Sidebar({ selectedChat, onSelectChat }) {
   }
 
   const handleNewMessage = (data) => {
+    if (!selectedChat || selectedChat._id !== data.chatId) {
+      toast.info(`New message from ${data.message.sender?.username || 'someone'}`)
+    }
+
     setChats(prevChats => {
       const updatedChats = prevChats.map(chat => {
         if (chat._id === data.chatId) {
@@ -322,6 +326,8 @@ export default function Sidebar({ selectedChat, onSelectChat }) {
                             <div className="flex justify-between items-center">
                               <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                                 {chat.lastMessage?.type === 'image' ? '📷 Image' :
+                                 chat.lastMessage?.type === 'video' ? '📹 Video' :
+                                 chat.lastMessage?.type === 'voice' ? '🎤 Voice note' :
                                  chat.lastMessage?.type === 'file' ? '📎 File' :
                                  chat.lastMessage?.content || 'No messages yet'}
                               </p>

@@ -27,10 +27,18 @@ const fileFilter = (req, file, cb) => {
     'image/png',
     'image/gif',
     'image/webp',
+    'audio/mpeg',
+    'audio/mp3',
+    'audio/wav',
+    'audio/ogg',
+    'audio/webm',
     'application/pdf',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'text/plain'
+    'text/plain',
+    'video/mp4',
+    'video/webm',
+    'video/ogg'
   ];
 
   if (allowedTypes.includes(file.mimetype)) {

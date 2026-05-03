@@ -9,7 +9,7 @@ const path = require('path');
 // @access  Private
 const sendMessage = async (req, res) => {
   try {
-    const { chatId, content, type = 'text', replyTo } = req.body;
+    const { chatId, content = '', type = 'text', replyTo } = req.body;
 
     // Check if chat exists and user is participant
     const chat = await Chat.findById(chatId);
@@ -42,7 +42,15 @@ const sendMessage = async (req, res) => {
 
     // Handle file upload
     if (req.file) {
-      messageData.type = req.file.mimetype.startsWith('image/') ? 'image' : 'file';
+      if (req.file.mimetype.startsWith('image/')) {
+        messageData.type = 'image';
+      } else if (req.file.mimetype.startsWith('audio/')) {
+        messageData.type = 'voice';
+      } else if (req.file.mimetype.startsWith('video/')) {
+        messageData.type = 'video';
+      } else {
+        messageData.type = 'file';
+      }
       messageData.fileUrl = `/uploads/${req.file.filename}`;
       messageData.fileName = req.file.originalname;
       messageData.fileSize = req.file.size;
@@ -56,13 +64,27 @@ const sendMessage = async (req, res) => {
     chat.lastMessage = message._id;
     await chat.save();
 
-    // Emit socket event
+    // Emit socket event and notification
     const io = getIO();
     chat.participants.forEach(participantId => {
       if (participantId.toString() !== req.user._id.toString()) {
         io.to(participantId.toString()).emit('new_message', {
           chatId,
           message
+        });
+
+        io.to(participantId.toString()).emit('notification', {
+          type: 'new_message',
+          chatId,
+          message: {
+            _id: message._id,
+            sender: message.sender,
+            content: message.content,
+            type: message.type,
+            fileUrl: message.fileUrl,
+            fileName: message.fileName,
+            createdAt: message.createdAt
+          }
         });
       }
     });

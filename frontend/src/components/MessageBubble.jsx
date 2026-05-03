@@ -68,6 +68,20 @@ export default function MessageBubble({ message, isOwn, showAvatar, onDelete }) 
               />
             )}
 
+            {message.type === 'video' && (
+              <video controls className="max-w-full rounded-lg">
+                <source src={message.fileUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
+
+            {message.type === 'voice' && (
+              <div className="flex flex-col space-y-2">
+                <audio controls src={message.fileUrl} className="w-full" />
+                <p className="text-xs text-gray-500">Voice note</p>
+              </div>
+            )}
+
             {message.type === 'file' && (
               <a 
                 href={message.fileUrl}

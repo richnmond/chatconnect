@@ -17,7 +17,7 @@ const messageSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['text', 'image', 'file', 'emoji'],
+    enum: ['text', 'image', 'file', 'emoji', 'voice', 'video'],
     default: 'text'
   },
   fileUrl: {

@@ -85,6 +85,44 @@ const initialize = (socketIo) => {
       }
     });
 
+    socket.on('call_user', ({ targetUserId, offer, chatId }) => {
+      if (!targetUserId || !offer) return;
+      io.to(targetUserId.toString()).emit('incoming_call', {
+        caller: {
+          id: socket.user._id,
+          username: socket.user.username,
+          avatar: socket.user.avatar
+        },
+        offer,
+        chatId
+      });
+    });
+
+    socket.on('accept_call', ({ callerId, answer }) => {
+      if (!callerId || !answer) return;
+      io.to(callerId.toString()).emit('call_accepted', {
+        answer
+      });
+    });
+
+    socket.on('decline_call', ({ callerId }) => {
+      if (!callerId) return;
+      io.to(callerId.toString()).emit('call_declined');
+    });
+
+    socket.on('ice_candidate', ({ targetUserId, candidate }) => {
+      if (!targetUserId || !candidate) return;
+      io.to(targetUserId.toString()).emit('ice_candidate', {
+        candidate,
+        from: socket.user._id
+      });
+    });
+
+    socket.on('end_call', ({ targetUserId }) => {
+      if (!targetUserId) return;
+      io.to(targetUserId.toString()).emit('call_ended');
+    });
+
     // Handle disconnection
     socket.on('disconnect', async () => {
       console.log(`User disconnected: ${socket.user.username}`);
